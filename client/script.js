@@ -1,52 +1,60 @@
-'use strict'; // Activado modo estricto
+'use strict'; // Modo estricto
 
-import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js'; // Importamos la biblioteca desde el cliente desde socket.io
+import { io, Socket } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
 
-const getUsername = async () => {
-    const username = localStorage.getItem('username');
+/* 01. Añadimos el retorno promise (porque async siempre devuelve promise) y le indicamos que es un string. 
+Se podria evitar poner "promise" y Typescript lo entenderia igual, pero para mantener las buenas practicas 
+es bueno indicarlo*/
+const getUsername = async (): Promise<string> => { 
+    const username = localStorage.getItem('username'); 
     if (username) {
         console.log(`El usuario ya existe ${username}`);
         return username;
     }
 
-    const res = await fetch('https://random-data-api.com/api/users/random_user');
-    const { username: randomUsername } = await res.json(); //Recibe la respuesta y la convierte en json
+    const res = await fetch('https://random-data-api.com/api/users/random_user'); 
+    const { username: randomUsername } = await res.json(); 
 
     console.log('random, randomUsername');
 
-    localStorage.setItem('username', randomUsername); //Guarda el usuario
-    return randomUsername; //Devuelve el usuario
-}
+    localStorage.setItem('username', randomUsername); 
+    return randomUsername; 
 
-const socket = io({ /*19*/ // Creamos el socket co io
+// 02. Tipamos el socket como un objeto "Socket" de socket.io
+const socket: Socket = io({
     auth: {
         token: '123',
         username: 'adrian',
-        serverOffset: 0 //Podemos saber donde se ha quedado el usuario (el ultimo mensaje guardado)
+        serverOffset: 0
     }
 });
-/*21*/ // Hacer que hable el cliente y el servidor
-const form = document.getElementById('form'); //Traemos el formulario
-const input = document.getElementById('input'); // Traemos el inputy para poder leer el emnsaje
-/*24*/ const messages = document.getElementById('messages'); /* Donde se guardan los mensajes*/
 
-/*25*/ // Cuando en el socket se reciba un mensaje cree un nuevo item lista (li) con un mensaje
-socket.on('chat message', (msg, serverOffset, username) => {
-    const item = `<li>
-        <p>${msg}</p>
-        <small>${username}</small>
-    </li>`;
+/* 03. Indicamos que "form" e "input" son de tipo Element. Si no se 
+especifica, Typescript entendera que son de tipo HTMLElement, que no
+sigue las buenas practicas porque tiene menos propiedades*/
+
+const form = document.getElementById('form') as HTMLFormElement;
+const input = document.getElementById('input') as HTMLInputElement;
+const messages = document.getElementById('messages') as HTMLElement; // Se podria dejar vacio, pero asi mantenemos las buenas practicas
+
+// 04. Indicamos el tipo de datos que son "msg", "serverOffset" y "username"
+socket.on('chat message', (msg: string, serverOffset: number, username: string) => {
+    const item = `
+        <li>
+            <p>${msg}</p>
+            <small>${username}</small>
+        </li>`;
     messages.insertAdjacentHTML('beforeend', item);
-    socket.auth.serverOffset = serverOffset; // Se actualiza cada vez que se envia un mensaje
-    messages.scrollTop = messages.scrollHeight; // Scroll de los mensajes
+    socket.auth.serverOffset = serverOffset; 
+    messages.scrollTop = messages.scrollHeight; 
 });
 
-/*21*/
-form.addEventListener('submit', (e) => { //Escuchamos que cuando se haga submit evite el comportamiento por defecto
-    e.preventDefault();
+// 05. Indicamos que el evento "e" es un evento
+form.addEventListener('submit', (e: Event) => {
+    e.preventDefault(); 
 
-    if (input.value) { // Si hay algun valor en el input se emite un mensaje de chat y le pasamos el input.value (el valor) al servidor
-        socket.emit('mensaje de chat', input.value);
-        input.value = ''; //Reseteamos el valro para que no se quede el mensaje ahi
+    if (input.value) { 
+        socket.emit('mensaje de chat', input.value); 
+        input.value = ''; 
     }
 });
