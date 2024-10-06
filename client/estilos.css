@@ -1,80 +1,81 @@
-*,
+*, /* Aplica todo el estilo al documento*/
 *::before,
 *::after {
     box-sizing: border-box;
 }
 
+/* Esquema de colores del documento*/
 :root {
     color-scheme: light dark;
 }
 
 body {
     margin: 0;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    display: grid;
+    font-family: system-ui, sans-serif;
+    display: grid; /* Activamos grid en todo el body para que forme una cuadricula*/
     place-content: center;
-    height: 100vh;
-    padding: 36px 36px 100px 36px;
-    grid-template-rows: 1fr;
+    height: 100vh; /* Para que el body ocupe el 100% de la altura de la pagina*/
+    padding: 36px; /* Separacion del body con el contenidp*/
+}
+ /*Mostramos el chat como una cuadricula con grid*/
+ #chat {
+    display: grid;
+    grid-template-rows: 1fr auto; /* Divide el chat en dos filas, la primera ocupa el 100% y la segunda el que necesite */
+    width: 350px;
+    height: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    overflow: hidden; /* Esconde lo que sobresalga del contenedor*/
 }
 
 #messages {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow-y: scroll;
-    height: 100%;
-    scroll-behavior: smooth;
-    padding-bottom: 48px;
+    margin: 0; /* Sin margenes alrededor del contenedor*/
+    padding: 16px;
+    overflow-y: scroll; /* Cuando haya muchos mensajes se activa el scroll vertical*/
+    grid-row: 1 / 2; /* Los mensajes ocupan la primera fila de grid */
+    scroll-behavior: smooth; /* Desplazamiento suave cuando se envien o reciban nuevos mensajes*/
+    padding-bottom: 48px; /* Relleno extra para que el mensaje mas reciente no este muy cerca del borde*/
 }
 
 #messages>li {
-    padding: .5rem 1rem;
+    padding: .5rem 1rem; /* Relleno dentro de cada mensaje*/
+    display: flex; /* Alinea los mensajes con flex*/
+    align-items: center; /* Alineamos los mensajes verticalmente */
 }
 
-#messages>li:nth-child(odd) {
+#messages>li:nth-child(odd) { /* Aplicamos un color alterno a los mensajes*/
     background: #000;
 }
 
-#chat {
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    overflow: hidden;
-    width: 350px;
-    height: 100%;
-    position: relative;
-}
-
 #form {
-    bottom: 0;
-    display: flex;
-    height: 48px;
-    left: 0;
-    padding: 4px;
-    position: absolute;
-    right: 0;
+    display: grid; /* El formulario se divide en una cuadricula*/
+    grid-template-columns: 1fr auto; /* Input ocupa todo el espacio disponible y el boton lo necesario */
+    gap: 8px; /* Espacio entre el input y el boton */
+    padding: 8px;
+    grid-row: 2 / 3; /* El formulario ocupa la segunda fila de grid */
+    background-color: #f1f1f1;
 }
 
 #input {
-    border-radius: 9999px;
+    grid-column: 1 / 2; /* El input ocupa la primera columna de la cuadricula*/
+    border-radius: 9999px; /* Aplicamos una forma redondeada al input*/
     border: 1px solid #eee;
-    flex: 1;
-    margin: 4px;
     padding: 0 8px;
 }
 
 #input:focus {
-    outline: 0;
+    outline: 0; /* Cuando el input tenga el focus desaparece el contorno*/
 }
 
 #form>button {
+    grid-column: 2 / 3; /* El boton ocupa la segunda columna de de grid */
     background: #09f;
     color: #fff;
     border: 0;
-    margin: 4px;
     border-radius: 4px;
+    padding: 0 16px;
 }
 
 #form>button:hover {
-    background: #0cf;
+    background: #0cf; /* Cuando el raton pasa por encima el boton cambia de color*/
 }
