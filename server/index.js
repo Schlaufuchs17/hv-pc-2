@@ -1,123 +1,106 @@
-"use strict";
-/* 01. Instalamos typescript: npm install typescript
-       Iniciamos typescript: px tsc --init para crear una archivo json
-       Cambiamos la extension del archivo a .ts para indicar que es typescript
+/*00*//*
+        - Instalar => npm install -y
+        - Iniciar y crear json => npm init -y
+        - Instalar dependencias (express) => npm install express -E
+        - Crear carpeta server y dentro index.js
 */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-var _a;
-Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express")); // 02. Importamos express y añadimos los tipos para request y response
-/*Esto se importa igual que en javascript*/
-const morgan_1 = __importDefault(require("morgan"));
-const dotenv = __importStar(require("dotenv")); //import dotenv from 'dotenv';  
-const client_1 = require("@libsql/client");
-const socket_io_1 = require("socket.io");
-const node_http_1 = require("node:http");
-dotenv.config();
-const port = parseInt((_a = process.env.PORT) !== null && _a !== void 0 ? _a : '3000'); // 03. Indicamos en typescript que "port" es un numero
-/*Todo igual que en javascript, no tocar const*/
-const app = (0, express_1.default)();
-const server = (0, node_http_1.createServer)(app);
-const io = new socket_io_1.Server(server, {
-    connectionStateRecovery: {}
-});
-const db = (0, client_1.createClient)({
-    url: 'libsql://crucial-huntara-ssk17.turso.io',
-    authToken: process.env.DB_TOKEN // 04. Indicamos que "authToken" es un string
-});
-/* 05. Para que await funciones con typescript tiene que estar dentro
-    de una funcion asincrona*/
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield db.execute(`
-        CREATE TABLE IF NOT EXISTS messages (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            content TEXT,
-            user TEXT
-        )
-    `);
-}))();
-// 06. Tipamos la función de conexión de socket.io
-io.on('connection', (socket) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    console.log('El usuario se ha conectado');
-    socket.on('disconnect', () => {
-        console.log('El usuario se ha desconectado');
-    });
-    socket.on('chat message', (msg) => __awaiter(void 0, void 0, void 0, function* () {
-        var _a;
-        let result;
-        const username = (_a = socket.handshake.auth.username) !== null && _a !== void 0 ? _a : 'anonymous';
-        console.log({ username });
-        try {
-            result = yield db.execute({
+
+/*01*/ import express from 'express' //importamos la dependencia express que hemos instalado. Para que funcionen los imports
+/*09*/ import logger from 'morgan'  //Importamos el logger de Morgan
+/*28*/ import dotenv from 'dotenv' // Importamos dotenv para leer las variables de entorno
+/*29*/ import {createClient} from '@libsql/client' // Crear el cliente utlizando libsql/client
+/*02*/ //En package.json hay que poner que el tipo de imprtaciones serán module:  "type": "module",
+/*13*/ import {Server} from 'socket.io' // Importamos socket.io despues de instalarlo
+/*14*/ import {createServer} from 'node:http' // Crear servidores http
+/*31*/ dotenv.config() // Utilizamos el dotenv
+import { format } from 'node:path'
+/*03*/ const port = process.env.PORT ?? 3000 //Crear una constante para el puerto, por defecto el puerto 3000
+
+/*04*/ const app = express () // Inicializamos la aplicacion llamando a express
+/*15*/ const server = createServer(app) // Creamos un servidor http
+/*26*/
+/*16*/ const io =  new Server (server,{  /* Crear servidor socket io y le pasamos el servidor http -(server)-*/
+    connectionStateRecovery:  {}
+})
+
+/*30*/ const db = createClient ({
+    url:  'libsql://crucial-huntara-ssk17.turso.io', //Poner la url que viene en turso
+    authToken : process.env.DB_TOKEN //Hay que llamar el token de turso desde el archivo .env
+})
+
+/*32*/ // Iniciar un crear una tabla
+await db.execute (`
+    CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    content TEXT,
+    user TEXT
+    )
+`)
+/*17*/ // Cuando el socket io tenga una conexion se ejecuta este callback
+io.on('connection', async (socket) =>{
+    console.log('El usuario se ha conectado')
+
+    /*20*/ // Ver cuando un usuario se desconecta
+    socket.on('disconnect', ()=>{ 
+        console.log ('El usuario se ha desconectado')
+    })
+
+    /*22*/ // Socket para cuando reciba un evento de "mensaje de chat", haga algo en respuesta
+    socket.on ('chat message', async (msg) =>{ // Para ver que le llega el mensaje
+        /*33*/ let result  //Cada vez que llegue un mensaje se grabara en la base de datos (persistencia)
+        const username = socket.handshake.auth.username ?? 'anonymous'
+        console.log({username})
+        try{      
+            result = await db.execute({
                 sql: 'INSERT INTO message(content, user) VALUES (:msg, :username)',
-                args: { msg, username }
-            });
+                args : {msg, username} // Con args prevenimos la inyeccion de sql
+            })
+        }catch(e){
+            console.error(e)
+            return
         }
-        catch (e) {
-            console.error(e);
-            return;
-        }
-        if (result.lastInsertRowid !== undefined) {
-            io.emit('chat message', msg, result.lastInsertRowid.toString(), username);
-        }
-    }));
-    console.log('auth');
-    console.log(socket.handshake.auth);
-    if (!socket.recovered) {
-        try {
-            const results = yield db.execute({
-                sql: 'SELECT id, content, user FROM messages WHERE id > ?',
-                args: [(_a = socket.handshake.auth.serverOffset) !== null && _a !== void 0 ? _a : 0]
-            });
-            results.rows.forEach((row) => {
-                socket.emit('chat message', row.content, row.id.toString(), row.user);
-            });
-        }
-        catch (e) {
-            console.error(e);
+        io.emit('chat message', msg, result.lastInsertRowid.toString(), username) // Emitimos un mensaje para todo el mundo (Broadcast) y al devolverlo, lo hace en formato string
+    })
+
+    consoles.log('auth')
+    console.log(socket.handshake.auth)
+
+    if (!socket.recovered){ // Recupera mensajes sin conexion
+        try{
+            const results = await db.execute({
+                sql:'SELECT id, content, user FROM messages WHERE id > ?',
+                args: [socket.handshake.auth.serverOffset ?? 0]
+            })
+
+            results.row.forEach (row =>{
+                socket.emit('chat message', row.content, row.id.toString(), row.user )
+            })
+        } catch (e) {
+            console.error(e)
         }
     }
-}));
-app.use((0, morgan_1.default)('dev'));
-/* 10.Hay que indicar que "req" es tipo request y "res" es tipo response*/
-app.get('/', (req, res) => {
-    res.sendFile(process.cwd() + '/client/index.html');
-});
-server.listen(port, () => {
-    console.log(`El servidor está conectado al puerto ${port}`);
-});
+}) 
+
+/*10*/ app.use(logger('dev')) // Morgan funciona a nivel de request para express
+/*11 Crear archivo index.html en la carpeta "client" */
+
+/*05*/ app.get ('/', (req, res) => { // Mensaje de bienvenida cuando el usuario acceda al chat
+    res.sendFile(process.cwd() + '/client/index.html') /* Servimos como mensaje un archivo concreto, -cwd- es la carpeta donde se ha inicilalizado el proceso*/
+})
+
+/*06*/ /*inicializar el servidor, que estará escuchando. 
+        Ésto se hace para tenerlo todo en un solo servidor*/
+    server.listen(port,() => { 
+    console.log(`El servidor esta conectado al puerto ${port}`)
+})
+/*07*/ /* En package.json copiamos - "dev": "node --watch ./server/index.js", - 
+        en la parte de scripts para hacerlo automaticamente con "npm run dev" 
+        y acceder "http://localhost:3000"*/
+
+/*08*/ /* Para saber el estado del servidor, si tarda mucho o da respuestas 
+        incorrectas, mejoramos el login instalando otra dependencia - npm install morgan -E - (con
+        la E para que ponga las dependencias exactas).
+        Morgan es un logger, una herramienta que guarda una traza de algo*/
+
+/*12*/ /* Crear el websocket -> socket.io: "npm install socket.io -E*/ 
+/*27*/ // Instalar dependendias de turso (servidor sql), - curl -sSfL https://get.tur.so/install.sh | bash - 

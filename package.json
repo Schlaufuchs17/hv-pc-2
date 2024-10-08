@@ -4,26 +4,18 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "node ./dist/server/index.cjs",
+    "dev": "node --watch ./server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "Cambios de hv-pc-1 para adaptar el codigo a Typescript",
+  "description": "",
   "dependencies": {
-    "@libsql/client": "0.14.0",
-    "dotenv": "16.4.5",
-    "express": "2.5.11",
-    "libsql": "0.4.6",
+    "@libsql/client": "^0.14.0",
+    "dotenv": "^16.4.5",
+    "express": "4.21.0",
     "morgan": "1.10.0",
-    "socket.io": "1.5.1",
-    "socket.io-client": "4.8.0"
-  },
-  "devDependencies": {
-    "@types/express": "5.0.0",
-    "@types/morgan": "1.9.9",
-    "@types/socket.io": "3.0.1",
-    "typescript": "5.6.2"
+    "socket.io": "4.8.0"
   }
 }
