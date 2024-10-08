@@ -1,6 +1,6 @@
 'use strict'; // Modo estricto
 
-import { io, Socket } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
+import { io, Socket } from "socket.io-client";
 
 /* 01. Añadimos el retorno promise (porque async siempre devuelve promise) y le indicamos que es un string. 
 Se podria evitar poner "promise" y Typescript lo entenderia igual, pero para mantener las buenas practicas 
@@ -45,7 +45,7 @@ socket.on('chat message', (msg: string, serverOffset: number, username: string) 
             <small>${username}</small>
         </li>`;
     messages.insertAdjacentHTML('beforeend', item);
-    socket.auth.serverOffset = serverOffset; 
+    (socket.auth as any).serverOffset = serverOffset; 
     messages.scrollTop = messages.scrollHeight; 
 });
 
@@ -58,3 +58,4 @@ form.addEventListener('submit', (e: Event) => {
         input.value = ''; 
     }
 });
+}

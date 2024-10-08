@@ -1,37 +1,28 @@
-/* 01. Instalamos typescript: npm install typescript
-       Iniciamos typescript: px tsc --init para crear una archivo json
-       Cambiamos la extension del archivo a .ts para indicar que es typescript
-*/
-
-import express, { Request, Response } from 'express';  // 02. Importamos express y añadimos los tipos para request y response
-
-/*Esto se importa igual que en javascript*/
-import logger from 'morgan';  
-import dotenv from 'dotenv';  
-import { createClient } from '@libsql/client';  
-import { Server } from 'socket.io';  
-import { createServer } from 'node:http'; 
-import { format } from 'node:path';  
+const express = require('express');  // CommonJS para express
+import { Request, Response } from 'express';
+const logger = require('morgan');
+const dotenv = require('dotenv');
+const { createClient } = require('@libsql/client');
+const { Server } = require('socket.io');
+const { createServer } = require('http');
+const { format } = require('path');
 
 dotenv.config();
 
-const port: number = parseInt(process.env.PORT ?? '3000');  // 03. Indicamos en typescript que "port" es un numero
+const port: number = parseInt(process.env.PORT ?? '3000');
 
-/*Todo igual que en javascript, no tocar const*/
-const app = express();  
-const server = createServer(app); 
+const app = express();
+const server = createServer(app);
 
-const io = new Server(server, {  
+const io = new Server(server, {
     connectionStateRecovery: {}
 });
 
 const db = createClient({
     url: 'libsql://crucial-huntara-ssk17.turso.io',
-    authToken: process.env.DB_TOKEN as string  // 04. Indicamos que "authToken" es un string
+    authToken: process.env.DB_TOKEN as string
 });
 
-/* 05. Para que await funciones con typescript tiene que estar dentro
-    de una funcion asincrona*/
 (async () => {
     await db.execute(`
         CREATE TABLE IF NOT EXISTS messages (
@@ -42,15 +33,14 @@ const db = createClient({
     `);
 })();
 
-// 06. Tipamos la función de conexión de socket.io
-io.on('connection', async (socket: any) => {  // 07. Indicamos que el socket puede ser cualquiera. Indica vsc que lo correcto seria "socket:any", pero quiza seria mejor "socket: Socket"
+io.on('connection', async (socket: any) => {
     console.log('El usuario se ha conectado');
 
     socket.on('disconnect', () => {
         console.log('El usuario se ha desconectado');
     });
 
-    socket.on('chat message', async (msg: string) => {  // 08. Indicamos que el mensaje es un string
+    socket.on('chat message', async (msg: string) => {
         let result;
         const username = socket.handshake.auth.username ?? 'anonymous';
         console.log({ username });
@@ -64,7 +54,9 @@ io.on('connection', async (socket: any) => {  // 07. Indicamos que el socket pue
             console.error(e);
             return;
         }
-        io.emit('chat message', msg, result.lastInsertRowid.toString(), username);
+        if (result.lastInsertRowid !== undefined) {
+            io.emit('chat message', msg, result.lastInsertRowid.toString(), username);
+        }
     });
 
     console.log('auth');
@@ -77,7 +69,7 @@ io.on('connection', async (socket: any) => {  // 07. Indicamos que el socket pue
                 args: [socket.handshake.auth.serverOffset ?? 0]
             });
 
-            results.row.forEach((row: any) => {  // 09. Indicamos que "row" puede ser de cualquier tipo, quiza quedaria mejor algo tipo "{id: number, content: string}"
+            results.rows.forEach((row: any) => {
                 socket.emit('chat message', row.content, row.id.toString(), row.user);
             });
         } catch (e) {
@@ -88,8 +80,7 @@ io.on('connection', async (socket: any) => {  // 07. Indicamos que el socket pue
 
 app.use(logger('dev'));
 
-/* 10.Hay que indicar que "req" es tipo request y "res" es tipo response*/
-app.get('/', (req: Request, res: Response) => {  
+app.get('/', (req: Request, res: Response) => {
     res.sendFile(process.cwd() + '/client/index.html');
 });
 
