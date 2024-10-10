@@ -11,7 +11,7 @@ import dotenv from 'dotenv';
 import { createClient } from '@libsql/client';  
 import { Server } from 'socket.io';  
 import { createServer } from 'node:http'; 
-import { format } from 'node:path';  
+import { path } from 'node:path';  
 
 dotenv.config();
 
@@ -42,7 +42,7 @@ const db = createClient({
     `);
 })();
 
-// 06. Tipamos la función de conexión de socket.io
+// 06. Tipamos la funcion de conexion de socket.io
 io.on('connection', async (socket: any) => {  // 07. Indicamos que el socket puede ser cualquiera. Indica vsc que lo correcto seria "socket:any", pero quiza seria mejor "socket: Socket"
     console.log('El usuario se ha conectado');
 
