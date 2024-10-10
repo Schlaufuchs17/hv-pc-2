@@ -47,15 +47,22 @@ io.on('connection', async (socket: any) => {
         console.log({ username });
 
         try {
-            result = await db.execute({
-                sql: 'INSERT INTO messages(content, user) VALUES (:msg, :username)',
-                args: { msg, username }
-            });
-        } catch (e) {
+        result = await db.execute({
+            sql: 'INSERT INTO messages(content, user) VALUES (:msg, :username)',
+            args: { msg, username }
+        });
+
+        // Verificamos si lastInsertRowid existe
+        if (result.lastInsertRowid) {
+            io.emit('chat message', msg, result.lastInsertRowid.toString(), username);
+        } else {
+            console.error('Error: lastInsertRowid is undefined');
+        }
+    } catch (e) {
             console.error(e);
             return;
         }
-        io.emit('chat message', msg, result.lastInsertRowid.toString(), username);
+        io.emit('chat message', msg, result.lastInsertRowid?.toString(), username);
     });
 
     console.log('auth');
