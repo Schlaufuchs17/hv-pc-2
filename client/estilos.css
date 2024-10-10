@@ -1,10 +1,11 @@
-*, /* Aplica todo el estilo al documento*/
+/* Aplicar estilo a todo el documento */
+*,
 *::before,
 *::after {
     box-sizing: border-box;
 }
 
-/* Esquema de colores del documento*/
+/* Esquema de colores para modo claro y oscuro */
 :root {
     color-scheme: light dark;
 }
@@ -12,70 +13,79 @@
 body {
     margin: 0;
     font-family: system-ui, sans-serif;
-    display: grid; /* Activamos grid en todo el body para que forme una cuadricula*/
+    display: grid; /* Estructura de grid en el body */
     place-content: center;
-    height: 100vh; /* Para que el body ocupe el 100% de la altura de la pagina*/
-    padding: 36px; /* Separacion del body con el contenidp*/
+    height: 100vh; /* El body ocupa toda la altura de la pantalla */
+    padding: 36px; /* Espaciado alrededor del contenido */
 }
- /*Mostramos el chat como una cuadricula con grid*/
- #chat {
+
+/* Contenedor principal del chat */
+#chat {
     display: grid;
-    grid-template-rows: 1fr auto; /* Divide el chat en dos filas, la primera ocupa el 100% y la segunda el que necesite */
+    grid-template-rows: 1fr auto; /* Dos filas: una para mensajes y otra para el formulario */
     width: 350px;
     height: 100%;
     border: 1px solid #ccc;
     border-radius: 4px;
-    overflow: hidden; /* Esconde lo que sobresalga del contenedor*/
+    overflow: hidden; /* Ocultar contenido que sobresalga */
 }
 
+/* Contenedor de mensajes */
 #messages {
-    margin: 0; /* Sin margenes alrededor del contenedor*/
+    margin: 0; /* Sin margen exterior */
     padding: 16px;
-    overflow-y: scroll; /* Cuando haya muchos mensajes se activa el scroll vertical*/
-    grid-row: 1 / 2; /* Los mensajes ocupan la primera fila de grid */
-    scroll-behavior: smooth; /* Desplazamiento suave cuando se envien o reciban nuevos mensajes*/
-    padding-bottom: 48px; /* Relleno extra para que el mensaje mas reciente no este muy cerca del borde*/
+    overflow-y: scroll; /* Scroll vertical para los mensajes */
+    grid-row: 1 / 2; /* Primer fila del grid */
+    scroll-behavior: smooth; /* Desplazamiento suave en el scroll */
+    padding-bottom: 48px; /* Espacio extra al final para no pegar al borde */
 }
 
-#messages>li {
-    padding: .5rem 1rem; /* Relleno dentro de cada mensaje*/
-    display: flex; /* Alinea los mensajes con flex*/
-    align-items: center; /* Alineamos los mensajes verticalmente */
+/* Estilos para los mensajes individuales */
+#messages > li {
+    padding: 0.5rem 1rem; /* Espaciado dentro del mensaje */
+    display: flex; /* Alineacion con flexbox */
+    align-items: center; /* Centrar verticalmente */
 }
 
-#messages>li:nth-child(odd) { /* Aplicamos un color alterno a los mensajes*/
+/* Alternar fondo en los mensajes impares */
+#messages > li:nth-child(odd) {
     background: #000;
 }
 
+/* Estilo del formulario de envio de mensajes */
 #form {
-    display: grid; /* El formulario se divide en una cuadricula*/
-    grid-template-columns: 1fr auto; /* Input ocupa todo el espacio disponible y el boton lo necesario */
-    gap: 8px; /* Espacio entre el input y el boton */
+    display: grid; /* Formulario dividido en columnas */
+    grid-template-columns: 1fr auto; /* Input ocupa todo el espacio, boton lo necesario */
+    gap: 8px; /* Separación entre input y boton */
     padding: 8px;
-    grid-row: 2 / 3; /* El formulario ocupa la segunda fila de grid */
+    grid-row: 2 / 3; /* Segunda fila del grid */
     background-color: #f1f1f1;
 }
 
+/* Estilo del input */
 #input {
-    grid-column: 1 / 2; /* El input ocupa la primera columna de la cuadricula*/
-    border-radius: 9999px; /* Aplicamos una forma redondeada al input*/
+    grid-column: 1 / 2; /* El input ocupa la primera columna del grid */
+    border-radius: 9999px; /* Bordes redondeados */
     border: 1px solid #eee;
     padding: 0 8px;
 }
 
+/* Quitar contorno cuando tenga el foco*/
 #input:focus {
-    outline: 0; /* Cuando el input tenga el focus desaparece el contorno*/
+    outline: none;
 }
 
-#form>button {
-    grid-column: 2 / 3; /* El boton ocupa la segunda columna de de grid */
+/* Estilo del boton de envio */
+#form > button {
+    grid-column: 2 / 3; /* El boton ocupa la segunda columna del grid */
     background: #09f;
     color: #fff;
-    border: 0;
+    border: none;
     border-radius: 4px;
     padding: 0 16px;
 }
 
-#form>button:hover {
-    background: #0cf; /* Cuando el raton pasa por encima el boton cambia de color*/
+/* Efecto hover en el boton */
+#form > button:hover {
+    background: #0cf;
 }
