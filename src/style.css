@@ -1,0 +1,121 @@
+/* Box-sizing para todo el documento*/
+   *, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Esquema de color del navegador */
+:root {
+    color-scheme: dark;
+}
+
+body {
+    margin: 0; /*Sin margenes*/
+    
+    font-family: system-ui, sans-serif;
+
+    /* Centrar el contenido con grid */
+    display: grid;
+    place-content: center; 
+
+    /*Altura del viewport (area visible) */
+    height: 100vh;
+
+    /* Espaciado en el contenido */
+    padding: 36px;
+}
+
+#chat {
+    /* Dos filas con grid:
+                1- Mensajes
+                2- Formulario */
+    display: grid;
+    grid-template-rows: 1fr auto; /* La primera fila (1fr) ocupara todo el espacio disponible, y la segunda (auto) ajustara su tamaño según el contenido */
+
+    /* Tamaño fijo para el chat en anchura y altura */
+    width: 350px;
+    height: 400px; 
+
+    /* Borde de las esquinas */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+
+    /*Evita que el contenido que se salga del margen */
+    overflow: hidden;
+}
+
+#messages {
+    margin: 0;
+    padding: 16px;
+
+    /* Scroll para cuando haya demasiados mensajes */
+    overflow-y: scroll;
+
+    /* Primera fila de grid en el chat */
+    grid-row: 1 / 2;
+
+    /* Desplazamiento suave */
+    scroll-behavior: smooth;
+
+    /* Mantiene el espacio en la parte inferior del contenedor */
+    padding-bottom: 48px;
+
+    /* Altura para la zona de los mensajes */
+    height: 300px;
+    max-height: 300px;
+}
+
+#messages > li {
+    /* Padding alrededor de cada mensaje */
+    padding: .5rem 1rem;
+
+    /* Con flex hace que cada mensaje se alinee verticalmente y centrado */
+    display: flex;
+    align-items: center;
+}
+
+#messages > li:nth-child(odd) {
+    /* Color de fondo diferente para los mensajes impares */
+    background: #858bbe;
+}
+
+#form {
+    /* Con grid layout dividimos el formulario con dos columnas: 
+                    1- Input
+                    2- Boton */
+    display: grid;
+    grid-template-columns: 1fr auto; 
+
+    /* Espacio entre las columnas */
+    gap: 8px;
+
+    /* Padding dentro del formulario */
+    padding: 8px;
+
+    /* Ubicacion del formulario en la segunda fila del grid del chat */
+    grid-row: 2 / 3;
+
+    /* Color de fondo para el formulario */
+    background-color: #f1f1f1;
+}
+
+#input {
+    /* El input ocupa la primera columna */
+    grid-column: 1 / 2;
+
+    /* Estilo visual del input */
+    border-radius: 9999px; /* Bordes circulares */
+    border: 1px solid #eee;
+    padding: 0 8px; /* Espaciado interno horizontal */
+}
+
+#form > button {
+    /* El boton ocupa la segunda columna del grid */
+    grid-column: 2 / 3;
+
+   
+    background: #09f; 
+    color: #fff; 
+    border: 0; 
+    border-radius: 4px; 
+    padding: 0 16px; 
+}
