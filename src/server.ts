@@ -12,7 +12,7 @@ const httpServer = createServer(app);
 // Configuracion de cors para permitir conexiones desde el localhost y permitir los métodos GET y POST.
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173", 
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"]
   }
 });
@@ -21,7 +21,7 @@ const io = new Server(httpServer, {
 io.on('connection', (socket) => {
   console.log('A user connected'); // Muestra en la consola cuando un usuario se conecta
 
-  // Escucha el mensaje de chat enviado desde el usuario
+   // Escucha el mensaje de chat enviado desde el usuario
   // Cuando un mensaje es recibido, el servidor lo retransmite a todos los usuarios conectados
   socket.on('chat message', (msg: string) => {
     io.emit('chat message', msg); // Emite el mensaje a todos los usuarios conectados (broadcasting)
