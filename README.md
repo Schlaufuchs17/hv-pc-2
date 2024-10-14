@@ -1,6 +1,6 @@
+# Chatbot 
 
-# Chatbot creado con Node.js, Express y Socket.io para una comunicacion instantanea entre dos usuarios.
-
+Chatbotcreado con Node.js, Express y Socket.io para una comunicacion instantanea entre dos usuarios.
 
 ## Características
 - Comunicación en tiempo real entre los usuarios.
