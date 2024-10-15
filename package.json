@@ -2,12 +2,7 @@
   "name": "chatbot-de-practicas",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "concurrently \"vite\" \"node --loader ts-node/esm src/server.ts\"",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
-  },
+  "type": "module", 
   "dependencies": {
     "@libsql/client": "^0.14.0",
     "dotenv": "^16.4.5",
@@ -17,11 +12,14 @@
     "socket.io-client": "^4.7.2"
   },
   "devDependencies": {
-    "@types/express": "^4.17.17",
+    "@types/express": "^4.17.21",
     "@types/node": "^20.5.0",
     "concurrently": "^8.2.0",
-    "ts-node": "^10.9.1",
-    "typescript": "^5.6.3",
-    "vite": "^4.5.5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "scripts": {
+    "start": "node dist/server/server.js",
+    "build": "tsc"
   }
 }

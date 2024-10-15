@@ -1,4 +1,4 @@
-import express from 'express'; // Importa express
+import express from 'express';
 import { createServer } from 'http'; // Importa el modulo http para crear un servidor http
 import { Server } from 'socket.io'; // Importa Socket.io para que la comunicacion sea en tiempo real
 
