@@ -1,5 +1,6 @@
-import './style.css';
-import { io } from 'socket.io-client';
+const { io } = await import(
+  "https://cdn.jsdelivr.net/npm/socket.io-client@4.8.0/dist/socket.io.esm.min.js"
+);
 
 const socket = io('http://localhost:3000');
 
@@ -36,3 +37,5 @@ socket.on('chat message', (msg: string) => {
 
   messagesContainer?.scrollTo(0, messagesContainer.scrollHeight);
 });
+
+export { };
