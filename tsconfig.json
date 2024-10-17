@@ -1,19 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "CommonJS", 
-    "outDir": "./dist",  
-    "rootDir": "./src", 
+    "target": "ES2020", 
+    "module": "ESNext",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "strict": true, 
     "resolveJsonModule": true,
-    "noFallthroughCasesInSwitch": true, //Previene caidas en las declaraciones
-    "esModuleInterop": true //Necesario para que trabajen ES2020 y CommonJS
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true
   },
   "include": [
-    "src/**/*.ts",
+    "src/client/**/*.ts",
+    "src/server/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    "dist",
+    "node_modules"
   ]
 }

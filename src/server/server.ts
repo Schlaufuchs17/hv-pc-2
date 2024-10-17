@@ -1,15 +1,14 @@
 import express from 'express';
-import { createServer } from 'http'; // Importa el modulo http para crear un servidor http
-import { Server } from 'socket.io'; // Importa Socket.io para que la comunicacion sea en tiempo real
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Inicia express
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-
-// Crea un servidor http utilizando express
 const httpServer = createServer(app);
-
-// Crea una socket.io y la enlaza al servidor http
-// Configuracion de cors para permitir conexiones desde el localhost y permitir los métodos GET y POST.
 const io = new Server(httpServer, {
   cors: {
     origin: "http://localhost:5173",
@@ -17,26 +16,26 @@ const io = new Server(httpServer, {
   }
 });
 
-// La conexion se activa cuando un usuario se conecta
+// Middleware para servir archivos estaticos desde dist/client y que funcione de una vez
+app.use(express.static(path.join(__dirname, '../client')));
+
+// Manejador para la ruta raiz
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/index.html')); // Sirve index.html
+});
+
 io.on('connection', (socket) => {
-  console.log('A user connected'); // Muestra en la consola cuando un usuario se conecta
-
-   // Escucha el mensaje de chat enviado desde el usuario
-  // Cuando un mensaje es recibido, el servidor lo retransmite a todos los usuarios conectados
+  console.log('A user connected');
   socket.on('chat message', (msg: string) => {
-    io.emit('chat message', msg); // Emite el mensaje a todos los usuarios conectados (broadcasting)
+    io.emit('chat message', msg);
   });
-
   socket.on('disconnect', () => {
     console.log('User disconnected');
   });
 });
 
-// Define el puerto
 const PORT = 3000;
 
-/* Inicia el servidor http y lo pone a escuchar en el primer puerto que este disponible o en el puerto 3000
-  y lo muestra por consola*/
 httpServer.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
