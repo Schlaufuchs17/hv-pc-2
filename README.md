@@ -93,4 +93,4 @@ It uses **Express** as a web server to serve a basic HTML page and **Socket.IO**
 
 ## Requirements:
 
-- Node.js and npm installed.
+    Node.js and npm installed.
