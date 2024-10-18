@@ -42,7 +42,7 @@ Utiliza **Express** como servidor web para servir una página HTML básica, y **
     npm start
 5. Abrir un navegador y visitar http://localhost:3000 para interactuar con el cliente.
 
-Requisitos:
+## Requisitos:
 
     Node.js y npm instalados.
 
@@ -91,6 +91,6 @@ It uses **Express** as a web server to serve a basic HTML page and **Socket.IO**
    ```
 5. Open a browser and visit http://localhost:3000 to interact with the client.
 
-Requirements:
+## Requirements:
 
 - Node.js and npm installed.
